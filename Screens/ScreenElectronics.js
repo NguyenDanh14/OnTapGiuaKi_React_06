@@ -1,17 +1,40 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, ScrollView, FlatList } from 'react-native';
+import Icon from 'react-native-vector-icons/EvilIcons';
+
+const product = [
+    {name: "SmartPHone1", imageProduct: require('../assets/Data/1.png')},
+    {name: "SmartPHone2", imageProduct: require('../assets/Data/2.png')},
+    {name: "SmartPHone3", imageProduct: require('../assets/Data/3.png')},
+    {name: "SmartPHone4", imageProduct: require('../assets/Data/4.png')},
+];
 
 const ScreenElectronics = () => {
+
+  
+        const renderItem = ({ item }) => (
+
+            <View style={styles.product}>
+                <Image source={item.imageProduct} style={styles.productImage} />
+                <View style={styles.productDetails}>
+                    <Text style={styles.productName}>{item.name}</Text>
+                    <Image source={require('../assets/Data/Rating.png')} style={styles.ratingStyle}/>
+                </View>
+                <TouchableOpacity style={styles.addButton}>
+                    <Text style={styles.addButtonText}>+</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    
+
     return (
         <View style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Text style={styles.headerTitle}>Electronics</Text>
-                {/* User Profile Image */}
-                <Image 
-                    source={require('../assets/Data/condition_account.png')} 
-                    style={styles.profileImage} 
-                />
+                <TouchableOpacity>
+                    <Icon name='user' size={40} color="black"/>
+                </TouchableOpacity>
             </View>
             
             {/* Search Bar */}
@@ -22,10 +45,12 @@ const ScreenElectronics = () => {
                     placeholder="Search" 
                 />
                 <TouchableOpacity style={styles.filterButton}>
-                    <Image
+                    {/* <Image
                         source={require('../assets/Data/clarity_home-solid.png')} 
                         style={styles.filterIcon}
-                    />
+                    /> */}
+
+                    <Icon name='navicon' size={20} color="black"/>
                 </TouchableOpacity>
             </View>
 
@@ -59,7 +84,7 @@ const ScreenElectronics = () => {
             </View>
 
             {/* Products */}
-            <ScrollView>
+            {/* <ScrollView>
                 <View style={styles.product}>
                     <Image source={require('../assets/Data/1.png')} style={styles.productImage} />
                     <View style={styles.productDetails}>
@@ -90,7 +115,24 @@ const ScreenElectronics = () => {
                         <Text style={styles.addButtonText}>+</Text>
                     </TouchableOpacity>
                 </View>
-            </ScrollView>
+                <View style={styles.product}>
+                    <Image source={require('../assets/Data/3.png')} style={styles.productImage} />
+                    <View style={styles.productDetails}>
+                        <Text style={styles.productName}>Smartphone</Text>
+                        <Image source={require('../assets/Data/Rating.png')} style={styles.ratingStyle}/>
+                    </View>
+                    <TouchableOpacity style={styles.addButton}>
+                        <Text style={styles.addButtonText}>+</Text>
+                    </TouchableOpacity>
+                </View>
+            </ScrollView>*/}
+
+            <FlatList
+                data={product}
+                renderItem={renderItem}
+                keyExtractor={(item) => item.name}
+                contentContainerStyle={{ paddingBottom: 20 }}
+            />
         </View>
     );
 }
@@ -127,8 +169,7 @@ const styles = StyleSheet.create({
         height: 40,
         backgroundColor: '#E5E5E5',
         borderRadius: 10,
-        paddingHorizontal: 10,
-         
+        paddingHorizontal: 10
     },
     filterButton: {
         marginLeft: 10,
@@ -145,7 +186,8 @@ const styles = StyleSheet.create({
     },
     categories: {
         flexDirection: 'row',
-        marginVertical: 10,
+        marginTop: 5,
+        marginBottom: 10,
         paddingHorizontal: 20,
     },
     category: {

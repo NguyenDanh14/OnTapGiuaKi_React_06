@@ -6,11 +6,24 @@ const ScreenLogin = ({navigation}) =>{
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
 
+    const user = [
+        {email: "danh@example.com", pass: "pw1111"},
+        {email: "danh1@example.com", pass: "pw2222"},
+        {email: "danh2@example.com", pass: "pw3333"},
+        {email: "danh3@example.com", pass: "pw4444"},
+        {email: "danh4@example.com", pass: "pw5555"},
+    ];
+
     const handleContinue = () => {
-        if (email.trim() === '' || password.trim() === '') {
+        if (email === '' || password === '') {
             Alert.alert("Lỗi", "Vui lòng nhập cả email và mật khẩu!");
         } else {
-            navigation.navigate('ScreenElectronics'); 
+            const foundUser = user.find(u => u.email === email && u.pass === password);
+            if (foundUser) {
+                navigation.navigate('ScreenElectronics');
+            } else {
+                Alert.alert("Lỗi", "Email hoặc mật khẩu không đúng!");
+            }
         }
     };
     
