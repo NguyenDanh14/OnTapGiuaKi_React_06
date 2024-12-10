@@ -16,6 +16,7 @@ const ScreenLogin = ({navigation}) =>{
     
     const [user, setUser] = useState([]);
 
+    // reponse, data : là tên tự đặt
     const getLogin = async () => {
         try {
             const reponse = await fetch('https://671ce99809103098807b9b28.mockapi.io/api/Login/User')

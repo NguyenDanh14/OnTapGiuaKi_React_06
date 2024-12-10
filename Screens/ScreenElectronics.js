@@ -18,30 +18,52 @@ import Icon from "react-native-vector-icons/EvilIcons";
 //     {name: "SmartPHone4", imageProduct: require('../assets/Data/4.png')},
 // ];
 
-const ScreenElectronics = () => {
-    const [product, setProduct] = useState([]);
+const ScreenElectronics = ({ navigation }) => {
+  const [product, setProduct] = useState([]);
 
-    const getProduct = async () => {
-  try {
-    const reponse = await fetch(
-      "https://671ce99809103098807b9b28.mockapi.io/api/Login/Product"
-    );
-    const data = await reponse.json();
-    setProduct(data);
-  } catch (error) {
-    console.log(error);
-  }
-};
-useEffect(() => {
-  getProduct();
-}, []);
+  const getProduct = async () => {
+    try {
+      const reponse = await fetch(
+        "https://671ce99809103098807b9b28.mockapi.io/api/Login/Product"
+      );
+      const data = await reponse.json();
+      setProduct(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getProduct();
+  }, []);
+
+  const handleAddProduct = (product) => {
+    navigation.navigate("AddProduct", { productData: product });
+  };
+  
+
+  const deleteProduct = async (productId) => {
+    try {
+      const response = await fetch(
+        `https://671ce99809103098807b9b28.mockapi.io/api/Login/Product/${productId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
+        console.log(`Product with ID ${productId} deleted successfully`);
+        getProduct(); // Cập nhật lại danh sách sau khi xoá
+      } else {
+        console.log(`Failed to delete product with ID ${productId}`);
+      }
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
+  };
 
   const renderItem = ({ item }) => (
     <View style={styles.product}>
-      <Image
-        source={{ uri: item.imgProduct }}  
-        style={styles.productImage}
-      />
+      <Image source={{ uri: item.imgProduct }} style={styles.productImage} />
       <View style={styles.productDetails}>
         <Text style={styles.productName}>{item.name}</Text>
         <Image
@@ -49,9 +71,27 @@ useEffect(() => {
           style={styles.ratingStyle}
         />
       </View>
-      <TouchableOpacity style={styles.addButton}>
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => handleAddProduct(item)} // Đảm bảo gọi đúng navigation.navigate
+      >
         <Text style={styles.addButtonText}>+</Text>
       </TouchableOpacity>
+
+      <View style={styles.productActions}>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => handleAddProduct(item)}
+        >
+          <Text style={styles.addButtonText}>Edit</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.deleteButton}
+          onPress={() => deleteProduct(item.id)}
+        >
+          <Text style={styles.deleteButtonText}>Delete</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 
@@ -68,12 +108,10 @@ useEffect(() => {
       {/* Search Bar */}
       <View style={styles.searchContainer}>
         <TextInput style={styles.searchInput} placeholder="Search" />
-        <TouchableOpacity style={styles.filterButton}>
-          {/* <Image
-                        source={require('../assets/Data/clarity_home-solid.png')} 
-                        style={styles.filterIcon}
-                    /> */}
-
+        <TouchableOpacity
+          style={styles.filterButton}
+          onPress={() => navigation.navigate("AddProduct")} // Điều hướng đến màn hình AddProduct
+        >
           <Icon name="navicon" size={20} color="black" />
         </TouchableOpacity>
       </View>
@@ -116,7 +154,7 @@ useEffect(() => {
       <FlatList
         data={product}
         renderItem={renderItem}
-        // keyExtractor={(item) => item.name}
+        keyExtractor={(item) => item.id.toString()} // Sử dụng id làm key
         contentContainerStyle={{ paddingBottom: 20 }}
       />
     </View>
