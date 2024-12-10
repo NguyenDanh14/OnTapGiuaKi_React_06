@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, Alert,TextInput } from 'react-native';
 
 const ScreenLogin = ({navigation}) =>{
@@ -6,27 +6,47 @@ const ScreenLogin = ({navigation}) =>{
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
 
-    const user = [
-        {email: "danh@example.com", pass: "pw1111"},
-        {email: "danh1@example.com", pass: "pw2222"},
-        {email: "danh2@example.com", pass: "pw3333"},
-        {email: "danh3@example.com", pass: "pw4444"},
-        {email: "danh4@example.com", pass: "pw5555"},
-    ];
+    // const user = [
+    //     {email: "danh@example.com", pass: "pw1111"},
+    //     {email: "danh1@example.com", pass: "pw2222"},
+    //     {email: "danh2@example.com", pass: "pw3333"},
+    //     {email: "danh3@example.com", pass: "pw4444"},
+    //     {email: "danh4@example.com", pass: "pw5555"},
+    // ];
+    
+    const [user, setUser] = useState([]);
+
+    const getLogin = async () => {
+        try {
+            const reponse = await fetch('https://671ce99809103098807b9b28.mockapi.io/api/Login/User')
+            const data = await reponse.json();
+            setUser(data);
+        } catch (error) {
+            console.log(error);
+            
+        }
+    }
+    useEffect(() => {
+        getLogin();
+    }, []);
 
     const handleContinue = () => {
-        if (email === '' || password === '') {
+        if (email.trim() === '' || password.trim() === '') {
             Alert.alert("Lỗi", "Vui lòng nhập cả email và mật khẩu!");
+            return;
+        }
+    
+        const foundUser = user.find(user => user.email === email && user.pass === password);
+    
+        if (foundUser) {
+            Alert.alert("Thành công", "Đăng nhập thành công!");
+            navigation.navigate('ScreenElectronics');
         } else {
-            const foundUser = user.find(u => u.email === email && u.pass === password);
-            if (foundUser) {
-                navigation.navigate('ScreenElectronics');
-            } else {
-                Alert.alert("Lỗi", "Email hoặc mật khẩu không đúng!");
-            }
+            Alert.alert("Lỗi", "Email hoặc mật khẩu không đúng!");
         }
     };
     
+
     const togglePasswordVisibility = () => {
         setShowPassword(prevState => !prevState); // Chuyển đổi trạng thái hiển thị mật khẩu
     };
